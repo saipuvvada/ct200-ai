@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from app.config import settings
 from app.api.v1.router import router as api_router
+from app.database.session import engine
+from app.models.base import Base
+
+# Create all tables in SQLite database on startup
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="CT-200 Document Intelligence & QA Test Generation System",
