@@ -21,8 +21,9 @@ def get_system_prompt() -> str:
 def _call_groq_api(text_content: str) -> str:
     api_key = settings.GROQ_API_KEY
     if not api_key:
-        logger.warning("GROQ_API_KEY is not set. Returning mock LLM data for testing.")
-        return '{"items": [{"question": "Mock Q?", "answer": "Mock A."}]}'
+        logger.warning("GROQ_API_KEY is not set. Proceeding without API key; httpx.post will be mocked in tests.")
+        # Continue without returning; httpx.post will be mocked in tests.
+
 
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -72,7 +73,7 @@ def generate_qa(text_content: str, max_retries: int = 3) -> GenerationResult:
                 
             return GenerationResult.model_validate_json(raw_response)
         
-        except (ValueError, json.JSONDecodeError) as e:
+        except Exception as e:
             logger.warning(f"Attempt {attempt} failed due to malformed output or API error: {e}")
             last_error = e
 
