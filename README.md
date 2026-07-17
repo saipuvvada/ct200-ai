@@ -15,8 +15,8 @@ CT-200 Document Intelligence & QA Test Generation System is a professional, prod
 | Search | ✅ |
 | Change Detection | ✅ |
 | Selection API | ✅ |
-| LLM Generation | ⏳ |
-| Staleness Detection | ⏳ |
+| LLM Generation | ✅ |
+| Staleness Detection | ✅ |
 
 ---
 
@@ -258,6 +258,16 @@ curl -X 'GET' 'http://127.0.0.1:8000/api/v1/selections' -H 'accept: application/
 **3. Delete a Selection**
 ```bash
 curl -X 'DELETE' 'http://127.0.0.1:8000/api/v1/selections/1'
+```
+
+**4. Generate QA for Selection (LLM Generation)**
+```bash
+curl -X 'POST' 'http://127.0.0.1:8000/api/v1/selections/1/generate' -H 'accept: application/json'
+```
+
+**5. Check Generation Staleness**
+```bash
+curl -X 'GET' 'http://127.0.0.1:8000/api/v1/generations/64a7c8e9f1a2b3c4d5e6f7g8/staleness' -H 'accept: application/json'
 ```
 
 ---
