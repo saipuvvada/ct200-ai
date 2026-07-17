@@ -30,7 +30,7 @@ def _call_groq_api(text_content: str) -> str:
     }
     
     payload = {
-        "model": "llama3-8b-8192",
+        "model": "llama-3.1-8b-instant",
         "messages": [
             {"role": "system", "content": get_system_prompt()},
             {"role": "user", "content": f"Generate QA pairs for the following text:\n\n{text_content}"}
