@@ -1,6 +1,6 @@
 import logging
 import uuid
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 from sqlalchemy.orm import Session
 from app.models.document import Document
 from app.models.node import Node
@@ -14,7 +14,7 @@ def import_document_version(
     filename: str,
     version: str,
     parsed_root: ParsedNode,
-    logical_node_map: Optional[Dict[int, str]] = None
+    logical_node_map: Optional[Dict[int, Tuple[str, float, str]]] = None
 ) -> Document:
     """
     Saves a parsed document version and its entire node hierarchy into the SQLite database.
@@ -24,7 +24,7 @@ def import_document_version(
     :param version: Version tag of the document.
     :param parsed_root: Root ParsedNode from the extractor.
     :param logical_node_map: Optional dictionary mapping parsed node order_indexes to
-                             existing logical_node_ids (used for version alignment in Phase 6).
+                             a tuple of (logical_node_id, matched_score, matching_status).
     :return: The created Document object.
     """
     # Check if this document version combination already exists
@@ -49,11 +49,13 @@ def import_document_version(
         # Calculate content hash for the node (Phase 5)
         content_hash = calculate_content_hash(parsed_node.heading, parsed_node.body)
 
-        # Resolve logical_node_id
-        # If logical_node_map contains a pre-matched logical_node_id, use it; otherwise generate fresh UUID.
+        # Resolve logical_node_id, score, and status from the map
         logical_node_id = None
+        matched_score = None
+        matching_status = "NEW"
+
         if logical_node_map and parsed_node.order_index in logical_node_map:
-            logical_node_id = logical_node_map[parsed_node.order_index]
+            logical_node_id, matched_score, matching_status = logical_node_map[parsed_node.order_index]
         else:
             logical_node_id = uuid.uuid4().hex
 
@@ -66,7 +68,10 @@ def import_document_version(
             level=parsed_node.level,
             body=parsed_node.body,
             order_index=parsed_node.order_index,
-            content_hash=content_hash
+            content_hash=content_hash,
+            node_type=parsed_node.node_type,
+            matched_score=matched_score,
+            matching_status=matching_status
         )
         db.add(db_node)
         db.flush()  # Retrieve db_node.id for child mapping

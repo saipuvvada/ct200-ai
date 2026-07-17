@@ -1,5 +1,5 @@
 from typing import List, Optional
-from sqlalchemy import ForeignKey, String, Text, Integer
+from sqlalchemy import ForeignKey, String, Text, Integer, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base
 
@@ -26,6 +26,9 @@ class Node(Base):
     body: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     order_index: Mapped[int] = mapped_column(Integer, nullable=False)
     content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    node_type: Mapped[str] = mapped_column(String(50), nullable=False, default="paragraph")
+    matched_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    matching_status: Mapped[str] = mapped_column(String(50), nullable=False, default="NEW")
 
     # Relationships
     document: Mapped["Document"] = relationship("Document", back_populates="nodes")
