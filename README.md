@@ -17,10 +17,19 @@ CT-200 Document Intelligence & QA Test Generation System is a professional, prod
 | Selection API | ✅ |
 | LLM Generation | ✅ |
 | Staleness Detection | ✅ |
+| Retrieval API | ✅ |
+| Testing (Pytest) | ✅ |
+| Approach Document | ✅ ([approach.md](approach.md)) |
 
 ---
 
-## Architecture Overview
+## 🏗️ Architecture & Approach
+
+For a detailed breakdown of the system architecture, how the logical node matching algorithm works, and the known limitations of hash-based staleness detection, please read the [**Approach Document**](approach.md).
+
+---
+
+## 🛠️ Installation
 
 ```text
        CT-200 PDF
@@ -268,6 +277,11 @@ curl -X 'POST' 'http://127.0.0.1:8000/api/v1/selections/1/generate' -H 'accept: 
 **5. Check Generation Staleness**
 ```bash
 curl -X 'GET' 'http://127.0.0.1:8000/api/v1/generations/64a7c8e9f1a2b3c4d5e6f7g8/staleness' -H 'accept: application/json'
+```
+
+**6. Retrieve QA by Selection (with dynamic staleness)**
+```bash
+curl -X 'GET' 'http://127.0.0.1:8000/api/v1/selections/1/generations?include_staleness=true' -H 'accept: application/json'
 ```
 
 ---
